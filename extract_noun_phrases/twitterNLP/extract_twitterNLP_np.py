@@ -1,5 +1,5 @@
 """
-Program to extract noun phrases using the TwitterNLP module
+Program to extract noun phrases and named entities using the TwitterNLP module
 Lang: py2
 """
 
@@ -12,9 +12,10 @@ import subprocess
 from Queue import Queue
 from threading import Thread
 import threading
-import extract_entities as extEnt
 
 BASE_DIR = 'twitter_nlp.jar'
+NUM_THREADS = 6
+lst = []
 
 if os.environ.has_key('TWITTER_NLP'):
     BASE_DIR = os.environ['TWITTER_NLP']
@@ -23,6 +24,7 @@ sys.path.append('%s/python' % (BASE_DIR))
 sys.path.append('%s/python/ner' % (BASE_DIR))
 sys.path.append('%s/hbc/python' % (BASE_DIR))
 
+import extractEntities as extEnt
 import Features
 import twokenize
 from LdaFeatures import LdaFeatures
@@ -35,8 +37,6 @@ import cap_classifier
 import pos_tagger_stdin
 import chunk_tagger_stdin
 import event_tagger_stdin
-
-lst = []
 
 def GetNer(ner_model, memory="1024m"):
     return subprocess.Popen('java -Xmx%s -cp %s/mallet-2.0.6/lib/mallet-deps.jar:%s/mallet-2.0.6/class cc.mallet.fst.SimpleTaggerStdin --weights sparse --model-file %s/models/ner/%s' % (memory, BASE_DIR, BASE_DIR, BASE_DIR, ner_model),
@@ -53,7 +53,7 @@ def GetLLda():
                            stdout=subprocess.PIPE)
 start = ""
 
-def extractEnts_NPs(q):
+def extract_np_and_entities(q):
 	posTagger = pos_tagger_stdin.PosTagger()
 	chunkTagger = chunk_tagger_stdin.ChunkTagger()
 	#eventTagger = event_tagger_stdin.EventTagger()
@@ -106,14 +106,15 @@ def extractEnts_NPs(q):
 
 		checkCounts = 0
 
-		count, tweet_id, proc_text = q.get()
+		count, tweet_id, text = q.get()
 		if(count % 1000 == 0):
 			print("-->", count)
-		entsStr, npsStr = extEnt.getEntandNP(proc_text, posTagger, chunkTagger, None, llda, ner_model, ner, fe, capClassifier, vocab,\
+		entsStr, npsStr = extEnt.getEntandNP(text, posTagger, chunkTagger, None, llda, ner_model, ner, fe, capClassifier, vocab,\
 			dictMap, dict2index, dictionaries, entityMap, dict2label)
 		lst.append([tweet_id, entsStr, npsStr])
 		q.task_done()
 
+#Function to write the extracted noun phrases and named entities to file
 def writeToFile(writer):
 	global lst
 	for elem in lst:
@@ -121,37 +122,55 @@ def writeToFile(writer):
 	lst = []
 
 if(__name__ == "__main__"):
-	q = Queue()
-	num_threads = 6
+	if(not(len(sys.argv) == 3)):
+		print("Usage: extract_twitterNLP_np_entities.py <INPUT_FILEPATH> <COLUMN_NUMBER_CONTAINING_TEXT>")
+		sys.exit()
 
-	for i in range(num_threads):
-		worker = Thread(target=extractEnts_NPs, args=(q, ))
+	if(not(sys.argv[2].isdigit())):
+		print("ERROR: The column number must be a digit.")
+		sys.exit()
+
+	#Input filepath
+	input_filepath = sys.argv[1]
+
+	#Column number of the text
+	col_num_text = int(sys.argv[2])
+
+	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
+	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_twitterNLP.csv"
+
+	#Initialize the queue
+	q = Queue()
+
+	for i in range(NUM_THREADS):
+		worker = Thread(target=extract_np_and_entities, args=(q, ))
 		#worker.setDaemon(True)
 		worker.start()
 
-	chunk_vals = range(15, 24)
-	for val in chunk_vals:
-		filename = "../8.82Tweets/3.tagMeForEntities/sf_processed_ent_" + str(val) + ".csv"
-		start = datetime.datetime.now()
-		with open(filename, "rb") as csvfile:
-			datareader = csv.reader(csvfile)
-			next(datareader)
-			count = 0
+	start = datetime.datetime.now()
+	with open(input_filepath, "rb") as csvfile:
+		datareader = csv.reader(csvfile)
+		next(datareader)
+		count = 0
 
-			print("Processing chunk", val)
-			g = open("../8.82Tweets/3_1.TagMe/sf_processed_ent_" + str(val) + "_twitterNLP.csv", "w")
-			writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-			writer.writerow(["id", "twitter_nlp_ents", "twitter_nlp_np"])
+		for row in datareader:
+			try:
+				q.put((count, row[0], row[2]))
+			except Exception as e:
+				print(e)
+			count += 1
+		print("All items to be processed are in queue...")
+		q.join()
 
-			for row in datareader:
-				try:
-					q.put((count, row[0], row[2]))
-				except Exception as e:
-					print(e)
-				count += 1
-			q.join()
+	#Write the extracted noun phrases to a csv
+	with open(output_filename, "w") as g:
+		#Initialize CSV writer object
+		writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 
-			writeToFile(writer)
-			g.close()
-		diff = datetime.datetime.now() - start
-		print(diff)
+		#Write the CSV column names
+		writer.writerow(["tweet_id", "twitternlp_ents", "twitternlp_np"])
+
+		#Write all the noun_phrases to a file
+		writeToFile(writer)
+
+	print("Time taken to extract noun phrases and named entities for the given dataset:", datetime.datetime.now() - start)

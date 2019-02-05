@@ -5,6 +5,7 @@ Lang: py2
 import json
 import re
 import csv
+import sys
 
 EMOJI_PATTERN = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons
@@ -26,19 +27,19 @@ def replaceMentions(token, user_mentions):
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):
 		print("Usage: tweet_preprocess_part1.py <TWEET_DUMP_FILEPATH>")
-		return
+		sys.exit()
 
 	#Input filepath
 	input_filepath = sys.argv[1]
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
-	output_filename = output_filename = input_filepath.split("/")[-1].split(".")[0] + "_part1_results.csv"
+	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_part1_results.csv"
 
 	try:
-		g = open("news_234h_pp-1.csv", "w")
+		g = open(output_filename, "w")
 	except IOError:
 		print("Error while creating new file!!!")
-		return
+		sys.exit()
 
 	writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 	writer.writerow(["tweet_id", "actual_text", "preprocess_part1_results"])
@@ -83,10 +84,6 @@ if(__name__ == "__main__"):
 						text[i] = ""
 					else:
 						lastPP = False
-				elif(text[i].startswith("@")):
-					text[i] = replaceMentions(text[i], user_mentions)
-				elif(text[i].startswith("#")):
-					pass
 
 			#Remove all the empty strings (incase any) obtained from the previous loop
 			text = filter(None, text)

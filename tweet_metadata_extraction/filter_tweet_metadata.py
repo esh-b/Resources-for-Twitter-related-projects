@@ -10,7 +10,7 @@ import sys
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):
 		print("Usage: filter_tweet_metadata.py <TWEET_DUMP_FILEPATH>")
-		return
+		sys.exit()
 
 	#Input filepath
 	input_filepath = sys.argv[1]
@@ -22,7 +22,7 @@ if(__name__ == "__main__"):
 		g = open(output_filename, "w", encoding="utf-8")
 	except IOError:
 		print("Error while creating new file!!!")
-		return
+		sys.exit()
 
 	#Writer object
 	writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)

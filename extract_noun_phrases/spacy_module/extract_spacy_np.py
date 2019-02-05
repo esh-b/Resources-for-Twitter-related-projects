@@ -3,6 +3,7 @@ Program to extract noun phrases for the given text dataset using Spacy module
 Lang: py2
 """
 
+import sys
 import csv
 import time
 import datetime
@@ -60,20 +61,20 @@ def writeToFile(writer):
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 3)):
 		print("Usage: extract_spacy_np.py <INPUT_FILEPATH> <COLUMN_NUMBER_CONTAINING_TEXT>")
-		return
+		sys.exit()
 
 	if(not(sys.argv[2].isdigit())):
 		print("ERROR: The column number must be a digit.")
-		return
+		sys.exit()
 
 	#Input filepath
-	input_filename = sys.argv[1]
+	input_filepath = sys.argv[1]
 
 	#Column number of the text
 	col_num_text = int(sys.argv[2])
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
-	output_filename = output_filename = input_filepath.split("/")[-1].split(".")[0] + "_spacyNP.csv"
+	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_spacyNP.csv"
 
 	#Initialize the queue
 	q = Queue()
@@ -87,7 +88,7 @@ if(__name__ == "__main__"):
 
 
 	start = datetime.datetime.now()
-	with open(input_filename, "rt") as csvfile:
+	with open(input_filepath, "rt") as csvfile:
 		datareader = csv.reader(csvfile)
 		next(datareader)
 		count = 0

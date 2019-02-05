@@ -3,12 +3,13 @@ Program to group the extracted tweets (from Tweet IDs) based on the number of ha
 Lang: py2
 """
 
+import sys
 import json
 
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):
 		print("Usage: group_tweets.py <TWEET_DUMP_FILEPATH>")
-		return
+		sys.exit()
 
 	#Input filepath
 	input_filepath = sys.argv[1]
@@ -33,7 +34,7 @@ if(__name__ == "__main__"):
 		fp_other = open(output_other_filename, "w")
 	except IOError:
 		print("Error while creating new files!!!")
-		return
+		sys.exit()
 
 #./getTweets/news_outlets.jsonl
 with open(input_filepath) as f:
