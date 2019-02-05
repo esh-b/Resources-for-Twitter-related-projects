@@ -7,6 +7,8 @@ import re
 import csv
 import sys
 
+OUTPUT_DIR = "./part1_output/"
+
 EMOJI_PATTERN = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons
         u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -33,10 +35,10 @@ if(__name__ == "__main__"):
 	input_filepath = sys.argv[1]
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
-	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_part1_results.csv"
+	output_filepath = OUTPUT_DIR + input_filepath.split("/")[-1].split(".")[0] + "_part1_results.csv"
 
 	try:
-		g = open(output_filename, "w")
+		g = open(output_filepath, "w")
 	except IOError:
 		print("Error while creating new file!!!")
 		sys.exit()
@@ -65,7 +67,7 @@ if(__name__ == "__main__"):
 			text = URL_PATTERN.sub('', text)
 
 			#Split the text into words (filter removes the empty strings after split)
-			text = filter(None, text.split(" "))
+			text = list(filter(None, text.split(" ")))
 
 			#Get all the usermentions in the tweet which are then replaced by the actual username
 			user_mentions = json_line['entities']['user_mentions']
@@ -92,10 +94,10 @@ if(__name__ == "__main__"):
 			text = ' '.join(text)
 
 			#Write to file
-			writer.writerow([json_line["id_str"], json_line['full_text'].encode('utf-8').strip(), text.encode('utf-8').strip()])
+			writer.writerow([json_line["id_str"], json_line['full_text'], text])
 			count += 1
 
 			if(count % 5000 == 0):
 				print("Part1: Processed", count, "tweets...")
 	g.close()
-	print("Part1 of preprocessing done..you can now run the part2 code to further preprocess your tweet text.")
+	print("Part1 of preprocessing done....you can now run the part2 code to further preprocess your tweet text.")

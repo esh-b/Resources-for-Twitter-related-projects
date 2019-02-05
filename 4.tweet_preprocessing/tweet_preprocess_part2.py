@@ -34,6 +34,8 @@ def create_tokenizer(nlp):
 nlp = spacy.load("en")
 nlp.tokenizer = create_tokenizer(nlp)
 
+OUTPUT_DIR = "./part2_output/"
+
 CONTR_THRESH = 1e-7
 POSS_TAGS = ["SCONJ", "PART", "DET", "CCONJ", "CONJ", "AUX", "ADP", "ADJ", "VERB", "INTJ", "PRON", "ADV"]
 
@@ -46,10 +48,10 @@ if(__name__ == "__main__"):
 	input_filepath = sys.argv[1]
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_part2_results.csv
-	output_filename = output_filename = input_filepath.split("/")[-1].split(".")[0] + "_part2_results.csv"
+	output_filepath = OUTPUT_DIR + input_filepath.split("/")[-1].split(".")[0] + "_part2_results.csv"
 
 	try:
-		g = open(output_filename, "w")
+		g = open(output_filepath, "w")
 	except IOError:
 		print("Error while creating new file!!!")
 		sys.exit()
@@ -57,7 +59,7 @@ if(__name__ == "__main__"):
 	writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 	writer.writerow(["tweet_id", "actual_text", "preprocess_part1_results", "preprocess_part2_results"])
 
-	with open(input_filepath, "rb") as csvfile:
+	with open(input_filepath, "r") as csvfile:
 		datareader = csv.reader(csvfile)
 		next(datareader)
 		count = 0
@@ -74,7 +76,7 @@ if(__name__ == "__main__"):
 
 			#Get the POS of all the words in the text
 			#NOTE: Spacy splits the symbols even while finding POS (e.g. #hash becomes [[#], [hash])
-			doc = nlp(text.decode('utf-8'))
+			doc = nlp(text)
 			tags = []
 			for token in doc:
 				tags.append([token.text, token.pos_])
@@ -98,7 +100,7 @@ if(__name__ == "__main__"):
 				remove_last_elem = True
 
 			for i in range(len(tagList) - 1, -1, -1):
-				if((i == (len(tagList) - 1)) and (tagIndex >= 0)):
+				if((i == (len(tagList) - 1)) and remove_last_elem):
 					pass
 				elif(tagList[i][0].startswith("#")):
 					#Segment the last hashtag's word if possible (e.g. #DonaldTrump becomes 'Donald<SPACE>Trump')
@@ -124,10 +126,10 @@ if(__name__ == "__main__"):
 			text_pp = text_pp[:-1]
 
 			#Write to file
-			writer.writerow([row[0], row[1], row[2], text_pp.encode('utf-8').strip()])
+			writer.writerow([row[0], row[1], row[2], text_pp])
 			count += 1
 
 			if(count % 5000 == 0):
 				print("Part2: Processed", count, "tweets...")
 	g.close()
-	print("Part2 of preprocessing done..You can see the final preprocessed text under the column 'preprocess_part2_results' in the generated file.")
+	print("Part2 of preprocessing done....You can see the final preprocessed text under the column 'preprocess_part2_results' in the generated file.")

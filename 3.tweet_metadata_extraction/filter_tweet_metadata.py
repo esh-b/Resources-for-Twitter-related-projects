@@ -1,11 +1,13 @@
 """
 Program to filter the metadata of the tweets from the twitter dump and save it in a CSV file
-Lang: py2
+Lang: py3
 """
 
 import json
 import csv
 import sys
+
+OUTPUT_DIR = "./output/"
 
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):
@@ -16,10 +18,10 @@ if(__name__ == "__main__"):
 	input_filepath = sys.argv[1]
 
 	#If the input file is X/Y/input_file.jsonl, then output filename is input_file_metadata.csv
-	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_metadata.csv"
+	output_filepath = OUTPUT_DIR + input_filepath.split("/")[-1].split(".")[0] + "_metadata.csv"
 
 	try:
-		g = open(output_filename, "w", encoding="utf-8")
+		g = open(output_filepath, "w")
 	except IOError:
 		print("Error while creating new file!!!")
 		sys.exit()

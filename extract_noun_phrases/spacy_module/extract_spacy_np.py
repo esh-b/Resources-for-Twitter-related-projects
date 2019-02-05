@@ -8,10 +8,13 @@ import csv
 import time
 import datetime
 import spacy
-from Queue import Queue
+import queue
 from threading import Thread
 
 nlp = spacy.load("en")
+
+#The directory where the output file is stored
+OUTPUT_DIR = "./output/"
 
 #Number of threads processing the data on the queue
 NUM_THREADS = 20
@@ -36,7 +39,7 @@ def get_noun_phrases(q):
 		np_text = ""
 
 		#Extract the noun phrase using spacy
-		doc = nlp(text.decode('utf-8'))
+		doc = nlp(text)
 
 		#All the noun phrases of given text are separated by "$$$"
 		for np in doc.noun_chunks:
@@ -77,7 +80,7 @@ if(__name__ == "__main__"):
 	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_spacyNP.csv"
 
 	#Initialize the queue
-	q = Queue()
+	q = queue.Queue()
 
 	for i in range(NUM_THREADS):
 		#Create NUM_THREADS thread workers
@@ -94,7 +97,8 @@ if(__name__ == "__main__"):
 		count = 0
 
 		for row in datareader:
-			q.put((count, row[0], row[col_num_text]))
+			print("--->", row[col_num_text - 1])
+			q.put((count, row[0], row[col_num_text - 1]))
 			count += 1
 		print("All items to be processed are in queue...")
 		q.join()
