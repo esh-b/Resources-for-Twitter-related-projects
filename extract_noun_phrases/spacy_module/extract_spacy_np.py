@@ -51,7 +51,7 @@ def get_noun_phrases(q):
 			print("Extracted noun phrases for", index, "tweets...")
 		q.task_done()
 
-#Method to write the extracted noun phrases to file
+#Function to write the extracted noun phrases to file
 def writeToFile(writer):
 	global lst
 	for elem in lst:

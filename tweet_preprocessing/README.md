@@ -1,11 +1,11 @@
 # Tweet preprocessing
 
-Twitter is a platform where there are lots of tweets with informal sentence structure. So, it is highly important to process the tweets carefully so as to not lose any kind of information while also understanding the context from the limited info (since already tweets have less content to deal with).
+Twitter is a platform where there are lots of tweets with informal sentence structure. So, it is highly important to preprocess the tweets carefully before working on any Twitter-related projects.
 
 ### Preprocessing stages
 * I have split the preprocessing phase of the tweets into two parts:
-  * ***Part 1***: Usermentions in the middle of a sentence are converted to usernames while usermentions and hashtags which are not part of the sentence are discarded. Also, urls and emojis are discarded.  
-  * ***Part 2***: The major processing in this part is that all the hashtags which are part of the sentence are converted to word forms (like #independenceday becomes independence<space>day). Also all contractions are expanded (like 'it's' to 'it is'). 
+  * **Part 1**: The usermentions and hashtags which are not part of the sentence are discarded. Also, urls and emojis are discarded.  
+  * **Part 2**: The major processing in this part is that all the hashtags and usermentions which are part of the sentence are converted to word forms (like #independenceday becomes independence<space>day and @trump becomes Donald<space>Trump). Also, all contractions are expanded (like 'it's' to 'it is').
 
 ### Preprocessing - Part 1
 * The tweets are preprocessed so as to understand and recommending appropriate hashtags. But tweets in general does not have good sentence structure (users use contractions, emojis etc. to express their thoughts). So, its important to preprocess these tweets correctly so as to use the text to recommend hashtags accurately.
