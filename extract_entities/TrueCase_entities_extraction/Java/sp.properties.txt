@@ -1,4 +1,0 @@
-annotators = tokenize,ssplit,truecase,ner
-parse.model = edu/stanford/nlp/models/srparser/englishSR.ser.gz
-truecase.overwriteText = true
-ner.applyNumericClassifiers = false

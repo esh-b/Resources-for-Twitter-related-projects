@@ -9,25 +9,25 @@ import sys
 import time
 import datetime
 import subprocess
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 import threading
 
-BASE_DIR = 'twitter_nlp.jar'
-NUM_THREADS = 6
+OUTPUT_DIR = "./output/"
+BASE_DIR = './twitter_nlp'
+NUM_THREADS = 1
 lst = []
 
-if os.environ.has_key('TWITTER_NLP'):
+if 'TWITTER_NLP' in os.environ:
     BASE_DIR = os.environ['TWITTER_NLP']
 
 sys.path.append('%s/python' % (BASE_DIR))
 sys.path.append('%s/python/ner' % (BASE_DIR))
+sys.path.append('%s/python/pos_tag' % (BASE_DIR))
 sys.path.append('%s/hbc/python' % (BASE_DIR))
 
 import extractEntities as extEnt
 import Features
-import twokenize
-from LdaFeatures import LdaFeatures
 from Dictionaries import Dictionaries
 from Vocab import Vocab
 
@@ -43,15 +43,19 @@ def GetNer(ner_model, memory="1024m"):
                            shell=True,
                            close_fds=True,
                            stdin=subprocess.PIPE,
-                           stdout=subprocess.PIPE)
+                           stdout=subprocess.PIPE,
+                           bufsize=1,
+                           universal_newlines=True)
 
 def GetLLda():
     return subprocess.Popen('%s/hbc/models/LabeledLDA_infer_stdin.out %s/hbc/data/combined.docs.hbc %s/hbc/data/combined.z.hbc 100 100' % (BASE_DIR, BASE_DIR, BASE_DIR),
                            shell=True,
                            close_fds=True,
                            stdin=subprocess.PIPE,
-                           stdout=subprocess.PIPE)
-start = ""
+                           stdout=subprocess.PIPE,
+                           bufsize=1,
+                           universal_newlines=True)
+start = None
 
 def extract_np_and_entities(q):
 	posTagger = pos_tagger_stdin.PosTagger()
@@ -93,7 +97,7 @@ def extract_np_and_entities(q):
 
 	checkCounts = 0
 	global start
-	print("Loaded models..Current thread id:", threading.current_thread().getName(), "Time diff:", (datetime.datetime.now() - start))
+	#print("Loaded models..Current thread id:", threading.current_thread().getName(), "Time diff:", (datetime.datetime.now() - start))
 
 	while True:
 		if(q.qsize() == 0):
@@ -107,11 +111,12 @@ def extract_np_and_entities(q):
 		checkCounts = 0
 
 		count, tweet_id, text = q.get()
-		if(count % 1000 == 0):
-			print("-->", count)
 		entsStr, npsStr = extEnt.getEntandNP(text, posTagger, chunkTagger, None, llda, ner_model, ner, fe, capClassifier, vocab,\
 			dictMap, dict2index, dictionaries, entityMap, dict2label)
 		lst.append([tweet_id, entsStr, npsStr])
+
+		if(count > 0 and count % 1000 == 0):
+			print("Processed", count, "tweets...")
 		q.task_done()
 
 #Function to write the extracted noun phrases and named entities to file
@@ -137,7 +142,7 @@ if(__name__ == "__main__"):
 	col_num_text = int(sys.argv[2])
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
-	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_twitterNLP.csv"
+	output_filepath = OUTPUT_DIR + input_filepath.split("/")[-1].split(".")[0] + "_twitterNLP.csv"
 
 	#Initialize the queue
 	q = Queue()
@@ -148,7 +153,7 @@ if(__name__ == "__main__"):
 		worker.start()
 
 	start = datetime.datetime.now()
-	with open(input_filepath, "rb") as csvfile:
+	with open(input_filepath, "r") as csvfile:
 		datareader = csv.reader(csvfile)
 		next(datareader)
 		count = 0
@@ -163,7 +168,7 @@ if(__name__ == "__main__"):
 		q.join()
 
 	#Write the extracted noun phrases to a csv
-	with open(output_filename, "w") as g:
+	with open(output_filepath, "w") as g:
 		#Initialize CSV writer object
 		writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 

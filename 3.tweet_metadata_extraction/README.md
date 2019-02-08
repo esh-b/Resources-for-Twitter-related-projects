@@ -1,11 +1,11 @@
 ### Filter Tweet Metadata
 * The file `filter_tweet_metadata.py` extracts the metadata for every tweet in the tweet_dump file and writes them onto a CSV file (in an organized way).
-* The code was written in `python2` and can be run using the command `python filter_tweet_metadata.py <TWEET_DUMP_FILEPATH>`
+* The code was written in `python2` and can be run using the command `python filter_tweet_data.py <TWEET_DUMP_FILEPATH>`
 * **Input file format:**
 	* The code assumes that every line if the input file contains the JSON dump of a tweet (obtained from the Twarc module - described in `tweet_extraction` module).
 	* **E.g.** Line 1 of the input file contains `{'tweet_id': 123456789, ....}` which is the JSON dump of the tweet with tweet_id `123456789`.
 * **Output file format:**
-	* The output file has the filename `<TWEET_DUMP_FILENAME>_metadata.csv` (The TWEET_DUMP_FILENAME containing the tweet dump is extracted automatically from the filepath).
+	* The output file has the filename `<TWEET_DUMP_FILENAME>_data.csv` (The TWEET_DUMP_FILENAME containing the tweet dump is extracted automatically from the filepath).
 	* The output CSV file has the following columns:
 		* `tweet_id` - Tweet ID
 		* `tweet_date` - Tweet posted date

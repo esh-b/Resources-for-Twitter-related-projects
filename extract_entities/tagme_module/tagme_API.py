@@ -30,6 +30,7 @@ def extractEnts(text, key, lp, rho):
 	try:
 		data = r.json()
 	except Exception as e:
+		print("--->", e)
 		print >> sys.stderr, traceback.format_exc()
 		return "ERROR"
 

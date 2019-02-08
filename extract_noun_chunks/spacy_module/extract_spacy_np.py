@@ -47,10 +47,10 @@ def get_noun_phrases(q):
 
 		#Add the extracted noun phrases to the list
 		global lst
-		lst.append([tweet_id, np_text])
+		lst.append([tweet_id, text, np_text])
 
 		#Print the status for every 5000 processed tweets
-		if(index % 5000 == 0):
+		if(index > 0 and index % 5000 == 0):
 			print("Extracted noun phrases for", index, "tweets...")
 		q.task_done()
 
@@ -77,7 +77,7 @@ if(__name__ == "__main__"):
 	col_num_text = int(sys.argv[2])
 
 	#If the input file is X/Y/input_file.csv, then output filename is input_file_spacyNP.csv
-	output_filename = input_filepath.split("/")[-1].split(".")[0] + "_spacyNP.csv"
+	output_filepath = OUTPUT_DIR + input_filepath.split("/")[-1].split(".")[0] + "_spacyNP.csv"
 
 	#Initialize the queue
 	q = queue.Queue()
@@ -97,21 +97,21 @@ if(__name__ == "__main__"):
 		count = 0
 
 		for row in datareader:
-			print("--->", row[col_num_text - 1])
 			q.put((count, row[0], row[col_num_text - 1]))
 			count += 1
 		print("All items to be processed are in queue...")
 		q.join()
 
 	#Write the extracted noun phrases to a csv
-	with open(output_filename, "w") as g:
+	with open(output_filepath, "w") as g:
 		#Initialize CSV writer object
 		writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 
 		#Write the CSV column names
-		writer.writerow(["tweet_id", "spacy_np"])
+		writer.writerow(["tweet_id", "preprocessed_text", "spacy_np"])
 
 		#Write all the noun_phrases to a file
 		writeToFile(writer)
 
+	print("Output file created in the output directory!")
 	print("Time taken to extract noun phrases for the given dataset:", datetime.datetime.now() - start)

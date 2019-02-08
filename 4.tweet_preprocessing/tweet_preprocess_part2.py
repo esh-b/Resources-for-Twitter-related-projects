@@ -57,7 +57,7 @@ if(__name__ == "__main__"):
 		sys.exit()
 
 	writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-	writer.writerow(["tweet_id", "actual_text", "preprocess_part1_results", "preprocess_part2_results"])
+	writer.writerow(["tweet_id", "actual_text", "preprocess_part1_results", "preprocessed_text"])
 
 	with open(input_filepath, "r") as csvfile:
 		datareader = csv.reader(csvfile)

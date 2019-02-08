@@ -1,18 +1,13 @@
 # Getting Noun chunks using the spacy module
-
-The spacy module has methods to extract noun chunks from any given sentence. The noun chunks are different from noun phrases in that noun chunks are "base noun phrases" – flat phrases that have a noun as their head (according to spacy). For further details, [click here](https://spacy.io/usage/linguistic-features#noun-chunks).
+The spacy module has methods to extract noun chunks from any given sentence. These noun chunks represent the important features of the sentence. These chunks can later be used for various applications.
+***Note:*** The noun chunks are different from noun phrases in that noun chunks are "base noun phrases" – flat phrases that have a noun as their head (according to spacy). For further details, [click here](https://spacy.io/usage/linguistic-features#noun-chunks).
 
 # Why spacy?
 Spacy is an active open-source project which provides methods for entity and noun phrase extractions, pos tagging and so on. It has support for even training custom models (tokenizers, taggers etc.). For our purpose, spacy is found to recognise the noun phrases from any given text with good accuracy.
 
-# Steps to run the code
-- The spacy noun phrase extraction code was written in Python3.
-- The program can be run using the command ```python3 spacyNP.py```
-- This will read the output files from the previous directory and generate a file with tweet IDs and the corresponding noun phrases in the text of that tweet.
-
 ### Noun phrase extraction using `Spacy` module
 * The file `extract_spacy_np.py` extracts the noun phrases for the given set of texts and writes them onto a new CSV file.
-* The code was written in `python2`. The code can be run using the following command `python extract_spacy_np.py <INPUT_FILEPATH> <COLUMN_NUMBER_CONTAINING_TEXT>"`.
+* The code was written in `python3`. The code can be run using the following command `python extract_spacy_np.py <INPUT_FILEPATH> <COLUMN_NUMBER_CONTAINING_TEXT>"`.
 * **Input file format:**
     *  The input file is expected to be a CSV file where the first column is assumed to be the `tweet_id`.
     *  Also, suppose the column number containing text (for which the noun phrases have to be extracted) is `X` (X > 1 since X=1 means the tweet_id column). Then the number `X` must be given as an argument (<COLUMN_NUMBER_CONTAINING_TEXT>) while running the code.
