@@ -2,12 +2,12 @@
 This repository contains code which might be required while working on projects related to Twitter data. You could use any module separately or process your raw data (dataset with only Tweet IDs) in sequential order (order to be followed according to the directory's numbering).
 
 ### Modules
-##### 1. Tweet Extraction
-##### 2. Group Tweets
-##### 3. Filtering Tweet data
-##### 4. Tweet Preprocessing
-##### 5. Extracting Tweet Entities
-##### 6. Extracting Tweet Noun phrases
+##### 1. Tweet extraction
+##### 2. Group tweets
+##### 3. Filtering tweet data
+##### 4. Tweet preprocessing
+##### 5. Extracting tweet's Noun Chunks
+##### 6. Extracting tweet's Named Entities
 
 ### Requirements
 * The modules required to run the codes are put in the `requirements.txt` file.
