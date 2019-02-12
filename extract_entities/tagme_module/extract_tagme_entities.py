@@ -2,6 +2,7 @@
 Lang: Py3
 """
 
+import os
 import sys
 import csv
 import time
@@ -25,7 +26,7 @@ LINK_PROB = 0.1
 #RHO
 RHO = 0.15
 
-OUTPUT_DIR = "./output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
 
 #Function to extract tagme entities for a given text
 def annotateTagme(index, text, key, LINK_PROB, RHO):

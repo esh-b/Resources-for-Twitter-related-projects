@@ -1,6 +1,6 @@
 """
 Program to extract noun phrases and named entities using the TwitterNLP module
-Lang: py2
+Lang: py3
 """
 
 import csv
@@ -13,9 +13,9 @@ from queue import Queue
 from threading import Thread
 import threading
 
-OUTPUT_DIR = "./output/"
-BASE_DIR = './twitter_nlp'
-NUM_THREADS = 1
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
+BASE_DIR = os.path.join(os.getcwd(), 'twitter_nlp')
+NUM_THREADS = 6
 lst = []
 
 if 'TWITTER_NLP' in os.environ:
@@ -173,7 +173,7 @@ if(__name__ == "__main__"):
 		writer = csv.writer(g, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
 
 		#Write the CSV column names
-		writer.writerow(["tweet_id", "twitternlp_ents", "twitternlp_np"])
+		writer.writerow(["tweet_id", "twitterNLP_ents", "twitterNLP_np"])
 
 		#Write all the noun_phrases to a file
 		writeToFile(writer)

@@ -1,6 +1,6 @@
 """
 Program to extract the tweets given the tweet IDs
-Lang: py2
+Lang: py3
 """
 
 import json
@@ -8,7 +8,7 @@ import sys
 from twarc import Twarc
 import twitter_app_config as conf
 
-OUTPUT_DIR = "./output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
 
 if(__name__ == "__main__"):	
 	if(not(len(sys.argv) == 2)):

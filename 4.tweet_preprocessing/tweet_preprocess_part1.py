@@ -1,5 +1,6 @@
 """
-Lang: py2
+Part 1 of the tweet preprocessing phase
+Lang: py3
 """
 
 import json
@@ -7,7 +8,7 @@ import re
 import csv
 import sys
 
-OUTPUT_DIR = "./part1_output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'part1_output')
 
 EMOJI_PATTERN = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons

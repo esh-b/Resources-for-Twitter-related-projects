@@ -1,6 +1,6 @@
 """
 Program to extract noun phrases for the given text dataset using Spacy module
-Lang: py2
+Lang: py3
 """
 
 import sys
@@ -14,7 +14,7 @@ from threading import Thread
 nlp = spacy.load("en")
 
 #The directory where the output file is stored
-OUTPUT_DIR = "./output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
 
 #Number of threads processing the data on the queue
 NUM_THREADS = 20

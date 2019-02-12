@@ -7,7 +7,7 @@ import json
 import csv
 import sys
 
-OUTPUT_DIR = "./output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
 
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):

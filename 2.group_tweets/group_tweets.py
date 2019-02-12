@@ -1,12 +1,12 @@
 """
 Program to group the extracted tweets (from Tweet IDs) based on the number of hashtags
-Lang: py2
+Lang: py3
 """
 
 import sys
 import json
 
-OUTPUT_DIR = "./output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
 
 if(__name__ == "__main__"):
 	if(not(len(sys.argv) == 2)):

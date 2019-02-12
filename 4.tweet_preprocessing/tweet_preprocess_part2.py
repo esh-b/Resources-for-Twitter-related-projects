@@ -1,5 +1,6 @@
 """
-Lang: py2
+Part 2 of the tweet preprocessing phase
+Lang: py3
 """
 
 import sys
@@ -34,7 +35,7 @@ def create_tokenizer(nlp):
 nlp = spacy.load("en")
 nlp.tokenizer = create_tokenizer(nlp)
 
-OUTPUT_DIR = "./part2_output/"
+OUTPUT_DIR = os.path.join(os.getcwd(), 'part2_output')
 
 CONTR_THRESH = 1e-7
 POSS_TAGS = ["SCONJ", "PART", "DET", "CCONJ", "CONJ", "AUX", "ADP", "ADJ", "VERB", "INTJ", "PRON", "ADV"]
