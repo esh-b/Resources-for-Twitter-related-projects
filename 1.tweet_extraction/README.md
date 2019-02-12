@@ -6,3 +6,4 @@
 * All the codes were written in `python3`.
 * The `Twarc` module (used in the code to retrieve tweet data) internally uses Twitter API to extract the tweet data from tweet IDs. Twarc requires the Twitter app credentials before you can run the program. You will have to create an app in the Twitter developer console and copy the app credentials in the `twitter_app_config.py` file before running the code. 
 * The code `extract_tweets.py` can be run using the command `python extract_tweets.py <INPUT_FILEPATH>`. The `INPUT_FILEPATH` must be a file where every row is assumed to contain a tweet ID. See the sample input (in the `input` directory).
+* On successful execution, the code will generate a `jsonl` file where every row is a json dump containing all the information for a tweet.
