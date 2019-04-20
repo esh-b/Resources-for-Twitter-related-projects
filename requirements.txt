@@ -31,6 +31,6 @@ toolz==0.9.0
 tqdm==4.30.0
 twarc==1.6.1
 ujson==1.35
-urllib3==1.24.1
+urllib3>=1.24.2
 wordseg==0.0.1
 wrapt==1.10.11
